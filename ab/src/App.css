@@ -1,0 +1,395 @@
+#root {
+  /* max-width: 1280px; */
+  margin: 0;
+}
+
+.app-container {
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  background-color: #1e293b;
+  color: white;
+  padding: 0 1rem;
+}
+
+.header-right .save-button {
+  background-color: #1e293b;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  outline: none;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.header-right .save-button:hover {
+  background-color: #334155;
+}
+
+.app-body {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+  position: relative; /* Needed for positioning children like chat and toolbar */
+}
+
+/* The scrollable + pannable main area */
+.app-main {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background-color: white;
+  background-image:
+    linear-gradient(to right, #e0e0e0 1px, transparent 1px),
+    linear-gradient(to bottom, #e0e0e0 1px, transparent 1px);
+  background-repeat: repeat;
+  background-size: 40px 40px;
+  will-change: background-position, background-size;
+}
+
+.canvas-content-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.canvas-label {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  pointer-events: none;
+  color: #1e293b;
+  user-select: none;
+}
+
+.canvas-label h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.canvas-label p {
+  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
+  color: #334155;
+}
+
+.canvas-image-placeholder {
+ position: absolute;
+ border: 2px dashed #d1d5db;
+ background-color: #f3f4f6;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ cursor: grab;
+ z-index: 1; /* Ensure it's under other interactive elements */
+}
+
+.canvas-image-placeholder .placeholder-content {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ color: #6b7280;
+}
+
+.canvas-image-placeholder .placeholder-content span {
+ font-size: 4rem;
+}
+
+.canvas-image-placeholder .placeholder-content p {
+ margin-top: 0.5rem;
+ font-size: 1rem;
+}
+
+.canvas-image-placeholder .placeholder-content small {
+ margin-top: 0.25rem;
+ font-size: 0.75rem;
+ color: #9ca3af;
+ text-align: center;
+ padding: 0 1rem;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+ display: block;
+}
+
+.canvas-image-placeholder.selected {
+  border-color: #0ea5e9; /* Change border color to a highlight blue */
+  border-style: solid;
+  outline: 3px solid #0ea5e9;
+  box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
+}
+
+/* Styles for the 3D Model Placeholder */
+.canvas-model3d-placeholder {
+  position: absolute;
+  border: 2px dashed #d1d5db;
+  background-color: #f3f4f6; /* Same as image placeholder */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+/* Re-using placeholder content styles for consistency */
+.canvas-model3d-placeholder .placeholder-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  text-align: center;
+  padding: 1rem;
+}
+    
+.canvas-model3d-placeholder .placeholder-content span {
+  font-size: 4rem;
+  line-height: 1;
+}
+    
+.canvas-model3d-placeholder .placeholder-content p {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
+    
+.canvas-model3d-placeholder .placeholder-content small {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Selection style for 3D models (using a different highlight color) */
+.canvas-model3d-placeholder.selected {
+  border-color: #a78bfa; /* Purple highlight */
+  border-style: solid;
+  outline: 3px solid #a78bfa;
+  box-shadow: 0 0 15px rgba(167, 139, 250, 0.4);
+}
+
+
+.close-button {
+  position: absolute;
+  background: transparent;
+  color: #333; /* Changed from white for better visibility */
+  border: none;
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 50;
+  border-radius: 50%;
+}
+
+.close-button:hover {
+  color: #ef4444; /* red on hover */
+  background-color: #fee2e2;
+}
+
+/* Chat Panel */
+.chat-panel {
+  position: absolute;
+  top: 0; /* Align to the top of app-body */
+  bottom: 0;
+  right: 0;
+  width: 600px; /* A more reasonable default width */
+  background-color: #f8fafc;
+  border-left: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  z-index: 30;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.chat-messages {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  overflow-y: auto;
+  font-size: 14px;
+}
+
+.chat-message {
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+  max-width: 80%;
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+
+.chat-message.user {
+  background-color: #0ea5e9;
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
+}
+
+.chat-message.bot {
+  background-color: #e2e8f0;
+  color: #1e293b;
+  align-self: flex-start;
+  border-bottom-left-radius: 2px;
+}
+
+.chat-input-box {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+.chat-textarea {
+  flex: 1;
+  resize: none;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  line-height: 1.4;
+  max-height: 120px;
+  overflow-y: auto;
+  font-family: inherit;
+  margin-right: 8px;
+}
+
+.chat-input-box button {
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #0ea5e9;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.chat-input-box button:hover {
+  background-color: #0284c7;
+}
+
+/* Canvas Toolbar */
+.canvas-toolbar {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  background-color: white;
+  border-radius: 12px;
+  padding: 8px 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  z-index: 40;
+}
+
+.toolbar-button {
+  width: 44px;
+  height: 44px;
+  padding: 6px;
+  border: 2px solid transparent;
+  background-color: transparent;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toolbar-button img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.toolbar-button:hover {
+  background-color: #f1f5f9;
+}
+
+.toolbar-button.active {
+  background-color: #e0f2fe;
+  border-color: #38bdf8;
+}
+
+/* Canvas Shapes and Text */
+.canvas-shape-preview {
+  position: absolute;
+  border: 2px dashed #0ea5e9;
+  pointer-events: none;
+  z-index: 99;
+}
+
+.canvas-shape-final {
+  position: absolute;
+  border: 2px solid #333;
+  background-color: rgba(14, 165, 233, 0.05); /* Very light blue fill */
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.text-block-container {
+  /* This is just a positioning wrapper, so it needs no styles of its own */
+  z-index: 2; /* Appear above shapes */
+}
+
+.canvas-text-block {
+  font-size: 14px;
+  min-width: 120px;
+  min-height: 30px;
+  padding: 4px;
+  border-radius: 4px;
+  resize: both;
+  border: 1px dashed #9ca3af;
+  background: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.canvas-text-block:focus {
+  border-style: solid;
+  border-color: #38bdf8;
+  outline: none;
+}
+
+.resize-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  right: 0;
+  bottom: 0;
+  background: #0ea5e9;
+  cursor: se-resize;
+  z-index: 10;
+  border-radius: 2px;
+  transform: translate(50%, 50%);
+  border: 2px solid white;
+}

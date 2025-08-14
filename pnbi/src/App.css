@@ -1,0 +1,530 @@
+#root {
+  /* max-width: 1280px; */
+  margin: 0;
+}
+
+.app-container {
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  background-color: #1e293b;
+  color: white;
+  padding: 0 1rem;
+  display: flex;
+  text-align: left;
+}
+
+.header-right .save-button {
+  width: 100px;
+  background-color: #1e293b;
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  font-size: 0.85rem;
+  text-align: center;
+  cursor: pointer;
+  outline: none; /* <-- Disable the focus outline */
+}
+
+.app-sidebar {
+  width: 200px;
+  background-color: #334155;
+  color: white;
+  padding: 1rem;
+  z-index: 2;
+}
+
+.section-title {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.section-item {
+  margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  font-size: 0.9rem;
+  color: white;
+}
+
+.section-subtext {
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  margin-top: 0.3rem;
+  padding-left: 0.5rem;
+}
+
+.sidebar-divider {
+  border: none;
+  border-top: 1px solid #475569;
+  margin: 1rem 0;
+  opacity: 0.7;
+}
+
+.sidebar-section {
+  margin-bottom: 1rem;
+}
+
+.sidebar-button {
+  width: 100%;
+  background-color: #475569;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  outline: none; /* <-- Disable the focus outline */
+}
+
+.sidebar-button:hover {
+  background-color: #64748b;
+}
+
+/* Also ensure focus outline is removed */
+.sidebar-button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.mt-1 {
+  margin-top: 0.5rem;
+}
+
+.app-body {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* The scrollable + pannable main area */
+.app-main {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  cursor: auto;
+  background-color: white;
+  background-image:
+    linear-gradient(to right, #e0e0e0 1px, transparent 1px),
+    linear-gradient(to bottom, #e0e0e0 1px, transparent 1px);
+  background-repeat: repeat;
+  background-size: 40px 40px;
+  background-position: 0px 0px; /* This will be overridden dynamically in JS */
+  will-change: background-position, background-size;
+}
+
+.canvas-content {
+  padding: 2rem;
+  user-select: none;
+  pointer-events: auto;
+}
+
+.canvas-label {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  z-index: 10;
+  pointer-events: none;
+  color: #1e293b;
+  user-select: none;
+}
+
+.canvas-label h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.canvas-label p {
+  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
+  color: #334155;
+}
+
+.canvas-node {
+  background-color: #334155; /* Match sidebar */
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  width: 180px;
+  margin-bottom: 1rem;
+  position: absolute;
+  cursor: move;
+  user-select: none;
+  position: absolute;
+  z-index: 10; /* Ensure nodes always appear above shape boxes */
+  box-sizing: border-box; /* Add this line */
+}
+
+.node-textarea {
+  width: 100%;
+  height: 60px; /* You can increase if needed */
+  margin-top: 0.5rem;
+  resize: none;
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #f1f5f9;
+  color: #0f172a;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.node-image-preview {
+  display: block;
+  margin-top: 0.5rem;
+  width: 100%;
+  height: auto;
+  max-height: 120px;
+  border-radius: 4px;
+  object-fit: contain;
+}
+
+.mix-node-inputs {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mix-input-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  background-color: #475569;
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+
+.mix-label {
+  flex: 1;
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  margin-right: 6px;
+}
+
+.mix-percentage-input {
+  width: 50px;
+  padding: 2px 4px;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: white;
+  color: #0f172a;
+}
+
+.canvas-node.selected {
+  border: 2px solid #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+}
+
+.close-button {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  background: transparent;
+  color: white;
+  border: none;
+  font-size: 1rem;         /* smaller X */
+  line-height: 1;          /* tighter vertical spacing */
+  padding: 0;              /* remove extra clickable space */
+  width: 18px;             /* small clickable area */
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 50; /* Should always appear above anything */
+}
+
+.close-button:hover {
+  color: #ef4444; /* red on hover */
+  background-color: #fee2e2;
+}
+
+.color-controls, .size-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  align-items: center;
+}
+
+.hex-display, .opacity-input, .axis-field {
+  width: 60px;
+  padding: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+.axis-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* saving canvas */
+.canvas-connections {
+  overflow: visible; /* ✅ allows wires to render outside bounds */
+}
+
+.canvas-content-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Chat */
+.chat-panel {
+  position: absolute;
+  top: 60px; /* Align to the top of app-body */
+  bottom: 0;
+  right: 0;
+  width: 320px; /* A more reasonable default width */
+  background-color: #f8fafc;
+  border-left: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  z-index: 30;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.chat-message {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  max-width: 70%;
+  word-wrap: break-word;
+  font-size: 14px;
+}
+
+.chat-messages {
+  flex: 1;
+  display: flex;
+  flex-direction: column; /* 👈 This makes new messages appear at the bottom */
+  padding: 12px;
+  overflow-y: auto;
+  font-size: 14px;
+}
+
+.chat-message.user {
+  background-color: #d1e7ff;
+  align-self: flex-end;
+  text-align: right;
+  border-bottom-right-radius: 2px;
+}
+
+.chat-message.bot {
+  background-color: #e2e8f0;
+  color: #1e293b;
+  align-self: flex-start;
+  border-bottom-left-radius: 2px;
+}
+
+
+.chat-textarea {
+  flex: 1;
+  resize: none;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  line-height: 1.4;
+  max-height: 120px;  /* Optional: limit growth */
+  overflow-y: auto;
+  font-family: inherit;
+  box-sizing: border-box;
+  background-color: white;
+  color: #0f172a;
+}
+
+.chat-input-box {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  background: #f9f9f9;
+}
+
+.chat-input-box input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  border-radius: 4px;
+  margin-right: 8px;
+}
+
+.chat-input-box button {
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #0ea5e9;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.chat-input-box button:hover {
+  background-color: #0284c7;
+}
+
+/* Canvas Toolbar */
+.canvas-toolbar {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  background-color: white;
+  border-radius: 12px;
+  padding: 8px 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  z-index: 40;
+}
+
+.toolbar-button {
+  width: 44px;
+  height: 44px;
+  padding: 6px;
+  border: 2px solid transparent;
+  background-color: transparent;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toolbar-button img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.toolbar-button:hover {
+  background-color: #f1f5f9;
+}
+
+.toolbar-button.active {
+  background-color: #e0f2fe;
+  border-color: #38bdf8;
+}
+
+/* Canvas Shapes and Text */
+.canvas-shape-preview {
+  position: absolute;
+  border: 2px dashed #0ea5e9;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.canvas-shape-final {
+  position: absolute;
+  border: 2px solid #333;
+  background-color: rgba(14, 165, 233, 0.05); /* Very light blue fill */
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.text-block-container {
+  /* This is just a positioning wrapper, so it needs no styles of its own */
+  z-index: 2; /* Appear above shapes */
+}
+
+/* .canvas-text-block {
+  font-size: 15px;
+  border: none;
+  background: none;
+  color: black;
+  z-index: 500;
+
+  white-space: pre;
+  overflow-x: auto;
+  overflow-y: hidden;
+  resize: none;
+  height: auto;
+  min-width: 120px; 
+} */
+
+.canvas-text-block {
+  font-size: 14px;
+  min-width: 120px;
+  min-height: 30px;
+  padding: 4px;
+  border-radius: 4px;
+  resize: both;
+  border: 1px dashed #9ca3af;
+  background: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.canvas-text-block:focus {
+  border-style: solid;
+  border-color: #38bdf8;
+  outline: none;
+}
+
+.resize-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  right: 0;
+  bottom: 0;
+  background: #0ea5e9;
+  cursor: se-resize;
+  z-index: 10;
+  border-radius: 2px;
+  transform: translate(50%, 50%);
+  border: 2px solid white;
+}
+.socket {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #0ea5e9;
+  position: absolute;
+  z-index: 20;
+  box-shadow: 0 0 2px #0ea5e9;
+}
+
+.input-socket {
+  left: -8px;
+  top: 33px; /* Change this value */
+  transform: none; /* And remove the transform */
+  cursor: crosshair;
+}
+
+.output-socket {
+  right: -8px;
+  top: 30px; /* Change this value */
+  transform: none; /* And remove the transform */
+  cursor: crosshair;
+}
