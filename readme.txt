@@ -1,3 +1,7 @@
+APBI or AB: agentic prompt-based interface.
+PNBI or PB: programming node-based interface.
+CNBI or CB: creative node-based interface.
+
 install environment:
 node js - v20.11.1
 npm v 10.5.0
